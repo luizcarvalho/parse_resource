@@ -251,13 +251,15 @@ module ParseResource
           batch_json["requests"] << json
         end
         res.post(batch_json.to_json, :content_type => "application/json") do |resp, req, res, &block|
-          response = JSON.parse(resp) rescue nil
+            response = JSON.parse(resp) rescue nil
           if resp.code == 400            
             return false
+          end
           if resp.code == 401
             puts "Não autorizado"
             return false
           end
+        
           if response && response.is_a?(Array) && response.length == objects.length
             merge_all_attributes(objects, response) unless method == "DELETE"
           end
